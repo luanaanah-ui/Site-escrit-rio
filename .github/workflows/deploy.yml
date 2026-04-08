@@ -1,0 +1,33 @@
+name: Deploy para HostGator
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Pegar o código
+        uses: actions/checkout@v3
+
+      - name: 📦 Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 🔨 Instalar e Compilar (Cozinhar o código)
+        run: |
+          npm install
+          npm run build
+
+      - name: 🚀 Enviar para a HostGator
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ftp.la-advocacia.com
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /public_html/
